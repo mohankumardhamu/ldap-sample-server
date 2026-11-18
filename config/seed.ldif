@@ -1,0 +1,54 @@
+dn: ${LDAP_BASE_DN}
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: ${LDAP_ORGANISATION}
+dc: ${LDAP_DC}
+
+dn: ou=People,${LDAP_BASE_DN}
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Groups,${LDAP_BASE_DN}
+objectClass: organizationalUnit
+ou: Groups
+
+dn: ou=ServiceAccounts,${LDAP_BASE_DN}
+objectClass: organizationalUnit
+ou: ServiceAccounts
+
+dn: uid=alice,ou=People,${LDAP_BASE_DN}
+objectClass: inetOrgPerson
+uid: alice
+cn: Alice Admin
+sn: Admin
+givenName: Alice
+mail: alice@${LDAP_DOMAIN}
+userPassword: ${USER_HASH}
+
+dn: uid=bob,ou=People,${LDAP_BASE_DN}
+objectClass: inetOrgPerson
+uid: bob
+cn: Bob User
+sn: User
+givenName: Bob
+mail: bob@${LDAP_DOMAIN}
+userPassword: ${USER_HASH}
+
+dn: cn=svc-uaa-ldap,ou=ServiceAccounts,${LDAP_BASE_DN}
+objectClass: inetOrgPerson
+cn: svc-uaa-ldap
+sn: ServiceAccount
+description: Read-only bind account for UAA (used once anonymous bind is off)
+userPassword: ${SVC_HASH}
+
+dn: cn=uaa-admins,ou=Groups,${LDAP_BASE_DN}
+objectClass: groupOfNames
+cn: uaa-admins
+member: uid=alice,ou=People,${LDAP_BASE_DN}
+
+dn: cn=uaa-users,ou=Groups,${LDAP_BASE_DN}
+objectClass: groupOfNames
+cn: uaa-users
+member: uid=alice,ou=People,${LDAP_BASE_DN}
+member: uid=bob,ou=People,${LDAP_BASE_DN}

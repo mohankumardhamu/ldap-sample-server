@@ -1,0 +1,20 @@
+services:
+  openldap:
+    build: .
+    image: local/openldap-anon:latest
+    container_name: openldap
+    ports:
+      - "389:389"
+    environment:
+      LDAP_DOMAIN: example.com          # becomes dc=example,dc=com
+      LDAP_ORGANISATION: Example Corp
+      LDAP_ADMIN_PASSWORD: admin123     # cn=admin,<base DN>
+      LDAP_USER_PASSWORD: Passw0rd!     # password for the sample users
+      LDAP_SVC_PASSWORD: SvcPassw0rd!   # cn=svc-uaa-ldap service account
+      LDAP_LOG_LEVEL: stats
+    volumes:
+      - ldap-config:/etc/ldap/slapd.d
+      - ldap-data:/var/lib/ldap
+volumes:
+  ldap-config:
+  ldap-data:

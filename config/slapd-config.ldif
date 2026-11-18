@@ -1,0 +1,48 @@
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+olcPidFile: ${LDAP_RUN_DIR}/slapd.pid
+olcArgsFile: ${LDAP_RUN_DIR}/slapd.args
+
+dn: cn=module{0},cn=config
+objectClass: olcModuleList
+cn: module{0}
+olcModulePath: /usr/lib/ldap
+olcModuleLoad: back_mdb
+
+dn: cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: schema
+
+include: file:///etc/ldap/schema/core.ldif
+include: file:///etc/ldap/schema/cosine.ldif
+include: file:///etc/ldap/schema/nis.ldif
+include: file:///etc/ldap/schema/inetorgperson.ldif
+
+dn: olcDatabase={-1}frontend,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcFrontendConfig
+olcDatabase: {-1}frontend
+olcAccess: {0}to dn.base="" by * read
+olcAccess: {1}to dn.base="cn=subschema" by * read
+
+dn: olcDatabase={0}config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: {0}config
+olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+olcRootDN: cn=admin,cn=config
+olcRootPW: ${ADMIN_HASH}
+
+dn: olcDatabase={1}mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: {1}mdb
+olcDbDirectory: ${LDAP_DATA_DIR}
+olcSuffix: ${LDAP_BASE_DN}
+olcRootDN: cn=admin,${LDAP_BASE_DN}
+olcRootPW: ${ADMIN_HASH}
+olcDbIndex: objectClass eq
+olcDbIndex: uid,cn,mail eq,sub
+olcDbIndex: member eq
+olcAccess: {0}to attrs=userPassword by self write by anonymous auth by * none
+olcAccess: {1}to * by self read by users read by anonymous read
